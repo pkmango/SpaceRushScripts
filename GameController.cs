@@ -72,16 +72,6 @@ public class GameController : MonoBehaviour
         GUI.Label(new Rect(200, 10, 100, 34), "Wave: " + waveNumber, style);
     }
 
-    //void Update()
-    //{
-        
-    //    // TODO это нужно перенести на сам объект
-    //    if (Time.time - startTime > startWait)
-    //    {
-    //        Destroy(levelNumberText);
-    //    }
-    //}
-
     // Вначале показывается текст с номером уровня, потом мы его убиваем
     IEnumerator DestroyLevelNumberText()
     {
@@ -96,7 +86,7 @@ public class GameController : MonoBehaviour
         //{
             for (int i = 0; i < waves.Length; i++)
             {
-                waveNumber = i + 1; // Номер волны врагов (дебаг)
+                waveNumber = i + 1; // Номер волны врагов
 
                 for (int j = 0; j < waves[i].hazards.Length; j++)
                 {
