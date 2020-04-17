@@ -18,7 +18,9 @@ public class AsteroidFieldGeneration : MonoBehaviour
     {
         while (true)
         {
-            GameObject currentObject = asteroidsBG[Random.Range(0, asteroidsBG.Length)];
+            GameObject currentObject = asteroidsBG[Random.Range(0, asteroidsBG.Length)]; //Выбираем случайный объект из массива
+            float randomSize = Random.Range(size.x, size.y); //Выбираем случайное значение размера объекта
+            currentObject.transform.localScale = new Vector3(randomSize, randomSize, randomSize); 
             Vector3 currentObjectPosition = new Vector3(Random.Range(spawnWidth.x, spawnWidth.y), transform.localPosition.y, transform.localPosition.z);
             Instantiate(currentObject, currentObjectPosition, transform.localRotation);
             yield return new WaitForSeconds(Random.Range(spawnInterval.x, spawnInterval.y));
