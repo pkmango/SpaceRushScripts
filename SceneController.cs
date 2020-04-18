@@ -64,13 +64,18 @@ public class SceneController : MonoBehaviour
                 i.lockState.SetActive(false);
             }
         }
-        levelSelectionMenu.gameObject.SetActive(!levelSelectionMenu.gameObject.activeInHierarchy);
+        CavasSetActive(levelSelectionMenu);
+    }
+
+    public void CavasSetActive(CanvasGroup canvasGroup)
+    {
+        canvasGroup.gameObject.SetActive(!canvasGroup.gameObject.activeInHierarchy);
     }
 
     public void OnPressStart(string sceneName)
     {
         startingSceneName = sceneName;
-        levelSelectionMenu.gameObject.SetActive(!levelSelectionMenu.gameObject.activeInHierarchy);
+        levelSelectionMenu.gameObject.SetActive(false);
         GetComponent<AudioSource>().Stop();
         mainMenuCanvasGroup.alpha = 0f;
         mainMenuCanvasGroup.interactable = false;
@@ -86,7 +91,8 @@ public class SceneController : MonoBehaviour
 
     public void OnPressHighScores()
     {
-        highScoreMenu.gameObject.SetActive(!highScoreMenu.gameObject.activeInHierarchy);
+        //highScoreMenu.gameObject.SetActive(!highScoreMenu.gameObject.activeInHierarchy);
+        CavasSetActive(highScoreMenu);
         confirmation.SetActive(false);
     }
 
