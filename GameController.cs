@@ -194,6 +194,7 @@ public class GameController : MonoBehaviour
     public void LevelCompleted()
     {
         Time.timeScale = 0f;
+        PlayerPrefs.SetInt(nextSceneName, 1);
         if (PlayerPrefs.GetInt("highScore", 0) < score)
         {
             PlayerPrefs.SetInt("highScore", score);

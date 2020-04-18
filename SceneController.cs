@@ -7,34 +7,27 @@ using UnityEngine.UI;
 
 public class SceneController : MonoBehaviour
 {
-    //public event Action BeforeSceneUnload;
-    //public event Action AfterSceneLoad;
     public CanvasGroup faderCanvasGroup;
     public CanvasGroup mainMenuCanvasGroup;
     public CanvasGroup highScoreMenu;
+    public CanvasGroup levelSelectionMenu;
     public GameObject confirmation;
     public Text highScoreValue;
     public float fadeDuration = 1f;
-    public string startingSceneName;
-    //public string initialStartingPositionName = "DoorToMarket";
-    //public SaveData playerSaveData;
+    public LevelButtonController[] levelButtonControllers;
 
-    //public AudioMixer soundsMixer;
-    //public AudioMixer musicMixer;
-    //public Toggle toggleMusic;
-    //public Toggle toggleSound;
-    //public bool musicOn;
-    //public bool soundsOn;
-
+    private string startingSceneName = "level_1";
     private bool isFading;
+    
 
     private void Start()
     {
         Application.targetFrameRate = 60;
         GetComponent<AudioSource>().Play();
         SetHighScoreValue(PlayerPrefs.GetInt("highScore", 0));
-        //musicOn = true;
-        //soundsOn = true;
+        highScoreMenu.gameObject.SetActive(false);
+        levelSelectionMenu.gameObject.SetActive(false);
+        PlayerPrefs.SetInt("level_5", 1);
     }
 
     public void SetHighScoreValue(int score)
@@ -49,35 +42,35 @@ public class SceneController : MonoBehaviour
         confirmation.SetActive(false);
     }
 
-    //public void ToggleSounds()
-    //{
-    //    soundsOn = !soundsOn;
-    //    if (soundsOn == false)
-    //    {
-    //        soundsMixer.SetFloat("soundsVolume", -80f);  // Выключаем все звуки
-    //    }
-    //    else
-    //    {
-    //        soundsMixer.SetFloat("soundsVolume", 0f); // Включаем все звуки
-    //    }
-    //}
-
-    //public void ToggleMusic()
-    //{
-    //    Debug.Log(GetComponent<Toggle>());
-    //    musicOn = !musicOn;
-    //    if (musicOn == false)
-    //    {
-    //        musicMixer.SetFloat("musicVolume", -80f);  // Выключаем все звуки
-    //    }
-    //    else
-    //    {
-    //        musicMixer.SetFloat("musicVolume", 0f); // Включаем все звуки
-    //    }
-    //}
-
-    public void OnPressStart()
+    public void OnClickResetLevels()
     {
+        foreach (LevelButtonController i in levelButtonControllers)
+        {
+            PlayerPrefs.SetInt(i.levelName, 0);
+            i.gameObject.GetComponent<Button>().interactable = false;
+            i.openState.SetActive(false);
+            i.lockState.SetActive(true);
+        }
+    }
+
+    public void OnPressChooseLevel()
+    {
+        foreach(LevelButtonController i in levelButtonControllers)
+        {
+            if (PlayerPrefs.GetInt(i.levelName, 0) == 1)
+            {
+                i.gameObject.GetComponent<Button>().interactable = true;
+                i.openState.SetActive(true);
+                i.lockState.SetActive(false);
+            }
+        }
+        levelSelectionMenu.gameObject.SetActive(!levelSelectionMenu.gameObject.activeInHierarchy);
+    }
+
+    public void OnPressStart(string sceneName)
+    {
+        startingSceneName = sceneName;
+        levelSelectionMenu.gameObject.SetActive(!levelSelectionMenu.gameObject.activeInHierarchy);
         GetComponent<AudioSource>().Stop();
         mainMenuCanvasGroup.alpha = 0f;
         mainMenuCanvasGroup.interactable = false;
@@ -101,10 +94,15 @@ public class SceneController : MonoBehaviour
     {
         confirmation.SetActive(!confirmation.activeInHierarchy);
     }
+
+    //public void OnPressLevelButton(string sn)
+    //{
+    //    startingSceneName = sn;
+    //    Debug.Log(startingSceneName);
+    //}
     public IEnumerator StartNewGame()
     {
         faderCanvasGroup.alpha = 1f;
-        //playerSaveData.Save(PlayerMovement.startingPositionKey, initialStartingPositionName);
         yield return StartCoroutine(LoadSceneAndSetActive(startingSceneName));
         StartCoroutine(Fade(0f));
     }
@@ -119,8 +117,7 @@ public class SceneController : MonoBehaviour
     private IEnumerator FadeAndSwitchScenes(string sceneName)
     {
         yield return StartCoroutine(Fade(1f));
-        //if (BeforeSceneUnload != null)
-        //    BeforeSceneUnload();
+
         yield return SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
 
         // Если хотим вернуться в главное меню, то загружать новую сцену не нужно, делаем persisrent_scene активной
@@ -136,9 +133,6 @@ public class SceneController : MonoBehaviour
         {
             yield return StartCoroutine(LoadSceneAndSetActive(sceneName));
         }
-
-        //if (AfterSceneLoad != null)
-        //    AfterSceneLoad();
 
         yield return StartCoroutine(Fade(0f));
     }
