@@ -100,7 +100,7 @@ public class GameController : MonoBehaviour
                     else if (hazard.GetComponentInChildren<SkinnedMeshRenderer>() != null)
                     {
                         halfSize = hazard.GetComponentInChildren<SkinnedMeshRenderer>().bounds.extents;
-                }
+                    }
                     else
                     {
                         halfSize = Vector3.zero;
