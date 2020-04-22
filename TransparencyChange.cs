@@ -4,16 +4,18 @@ using UnityEngine;
 
 public class TransparencyChange : MonoBehaviour
 {
-    public float changeTime;
+    public float changeTime = 0.4f;
+    public string toDestroy = "no"; // Нужно ли унчичтожить объект после отработки эффекта?
 
     private Color myColor = Color.white;
 
     void Start()
     {
-        StartCoroutine(SmoothChange(0f, 1f, changeTime));
+
+        StartCoroutine(SmoothChange(0f, 1f));
     }
 
-    IEnumerator SmoothChange(float from, float to, float timer)
+    public IEnumerator SmoothChange(float from, float to)
     {
 
         float t = 0.0f;
@@ -22,7 +24,7 @@ public class TransparencyChange : MonoBehaviour
 
         while (t < 1.0f)
         {
-            t += Time.deltaTime / timer;
+            t += Time.deltaTime / changeTime;
 
             myColor.a = Mathf.Lerp(from, to, t);
             gameObject.GetComponent<Renderer>().material.color = myColor;
@@ -30,6 +32,10 @@ public class TransparencyChange : MonoBehaviour
             yield return null;
         }
 
+        if(toDestroy == "yes")
+        {
+            Destroy(gameObject);
+        }
 
     }
 

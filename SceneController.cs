@@ -27,7 +27,7 @@ public class SceneController : MonoBehaviour
         SetHighScoreValue(PlayerPrefs.GetInt("highScore", 0));
         highScoreMenu.gameObject.SetActive(false);
         levelSelectionMenu.gameObject.SetActive(false);
-        PlayerPrefs.SetInt("level_5", 1);
+        //PlayerPrefs.SetInt("level_5", 1);
     }
 
     public void SetHighScoreValue(int score)
