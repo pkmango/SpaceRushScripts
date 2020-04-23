@@ -91,7 +91,6 @@ public class SceneController : MonoBehaviour
 
     public void OnPressHighScores()
     {
-        //highScoreMenu.gameObject.SetActive(!highScoreMenu.gameObject.activeInHierarchy);
         CavasSetActive(highScoreMenu);
         confirmation.SetActive(false);
     }
@@ -101,11 +100,6 @@ public class SceneController : MonoBehaviour
         confirmation.SetActive(!confirmation.activeInHierarchy);
     }
 
-    //public void OnPressLevelButton(string sn)
-    //{
-    //    startingSceneName = sn;
-    //    Debug.Log(startingSceneName);
-    //}
     public IEnumerator StartNewGame()
     {
         faderCanvasGroup.alpha = 1f;

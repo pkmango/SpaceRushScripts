@@ -281,4 +281,19 @@ public class GameController : MonoBehaviour
             toggleMusic.isOn = false;
         }
     }
+
+    void Update()
+    {
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if(pauseButton.interactable == true)
+                {
+                    OnPressPause();
+                }
+                
+            }
+        }
+    }
 }
