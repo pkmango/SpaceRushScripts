@@ -44,7 +44,9 @@ public class DestroyByContact : MonoBehaviour
         {
             other.gameObject.GetComponent<PlayerController>().weaponID = 0;
             Instantiate(playerExplosion, other.transform.position, other.transform.rotation);
-            other.gameObject.SetActive(false);
+            //other.gameObject.SetActive(false);
+            other.gameObject.GetComponent<MeshRenderer>().enabled = false;
+            other.gameObject.GetComponent<PlayerController>().engine.SetActive(false);
             for (int i = 0; i < gameController.Lifes.Length; i++)
             {
                 if (gameController.Lifes[i].activeSelf)

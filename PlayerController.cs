@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public WeaponSettings[] weapons; // Коллекция возможных вооружений
     public int weaponID; // Номер оружия
     public float zMax;  // ограничтель верхней границы полета
+    public GameObject engine;
 
     private SpaceSize spaceSize;
     private float nextFire;

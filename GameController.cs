@@ -135,7 +135,9 @@ public class GameController : MonoBehaviour
     public void Rebirth(GameObject player)
     {
         player.transform.position = Vector3.zero;
-        player.SetActive(true);
+        player.GetComponent<MeshRenderer>().enabled = true;
+        //player.SetActive(true);
+        player.GetComponent<PlayerController>().engine.SetActive(true);
         player.GetComponent<Collider>().enabled = false;
         count = 0;
         InvokeRepeating("Twinkle", 0.12f, 0.12f);
@@ -145,10 +147,11 @@ public class GameController : MonoBehaviour
     {
         if(player != null)
         {
-            player.SetActive(!player.activeSelf);
-        
-            if (count == 7)
+            player.GetComponent<MeshRenderer>().enabled = !player.GetComponent<MeshRenderer>().enabled;
+            player.GetComponent<PlayerController>().engine.SetActive(!player.GetComponent<PlayerController>().engine.activeInHierarchy);
+            if (count == 9)
             {
+                //player.GetComponent<MeshRenderer>().enabled = true;
                 player.GetComponent<Collider>().enabled = true;
                 CancelInvoke("Twinkle");
             }
@@ -226,11 +229,26 @@ public class GameController : MonoBehaviour
         }
         else
         {
+            //InvokeRepeating("SpeedReturn", 0.0f, 0.0125f);
             Time.timeScale = 1f;
             CanvasGroupActivation(pauseCanvasGroup, false);
             pause = false;
         }
     }
+
+    //void SpeedReturn()
+    //{
+    //    if (Time.timeScale < 1f)
+    //    {
+    //        Debug.Log(Time.timeScale);
+    //        Time.timeScale += 0.025f;
+    //    }
+    //    else
+    //    {
+    //        Time.timeScale = 1f;
+    //        CancelInvoke("SpeedReturn");
+    //    }
+    //}
 
     public void CanvasGroupActivation(CanvasGroup group, bool turnOn)
     {
