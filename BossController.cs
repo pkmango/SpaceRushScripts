@@ -13,6 +13,8 @@ public class BossController : MonoBehaviour
         if (gameControllerObject != null)
         {
             gameController = gameControllerObject.GetComponent<GameController>();
+
+            gameController.bossHelthBar.gameObject.SetActive(true);
         }
         if (gameController == null)
         {
@@ -27,6 +29,8 @@ public class BossController : MonoBehaviour
 
     private void OnDestroy()
     {
+        gameController.bossHelthBar.gameObject.SetActive(false);
+
         GameObject[] allLasers = GameObject.FindGameObjectsWithTag("Laser");
         for (int i = 0; i < allLasers.Length; i++)
         {
@@ -35,13 +39,8 @@ public class BossController : MonoBehaviour
 
         if (!isShuttingDown && !gameController.isShuttingDown)
         {
-            if (GameObject.FindWithTag("GameController") != null)
-            {
-                gameController.CanvasGroupActivation(gameController.pauseButton, false);
-                gameController.Invoke("LevelCompleted", 1.5f);
-            }
-        
-        }
-            
+            gameController.CanvasGroupActivation(gameController.pauseButton, false);
+            gameController.Invoke("LevelCompleted", 1.5f);
+        }  
     }
 }

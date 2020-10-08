@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour
 
     public Text scoreText;
     public Text levelNumberText;
+    public Text waveNumberText;
     public GameObject restartButton;
     public GameObject[] Lifes;
     public GameObject[] bonuses;
@@ -23,6 +24,8 @@ public class GameController : MonoBehaviour
     public CanvasGroup gameOverCanvasGroup;
     public CanvasGroup winCanvasGroup;
     public CanvasGroup pauseButton;
+    public RectTransform bossHelthBar; // Хелсбар для босса целиком
+    public RectTransform currentBossHelthBar; // Хелсбар для босса текущий (зеленая полоска)
     public Toggle toggleMusic;
     public Toggle toggleSound;
     public bool isShuttingDown; // Флаг показывает закрываем ли мы сцену и нужно ли создавать объекты при вызове onDestroy
@@ -35,20 +38,10 @@ public class GameController : MonoBehaviour
     private bool pause; // Нажата ли пауза?
     private SceneController sceneController;
     private AudioController audioController;
-    //private float startTime;
-
-    // Стиль и счетчик для отображения номера волны врагов (для дебага)
-    private GUIStyle style = new GUIStyle();
-    private int waveNumber;
 
     void Start()
     {
-        style.normal.textColor = Color.white;
-        style.fontSize = 32;
-        style.fontStyle = FontStyle.Bold;
-
         isShuttingDown = false;
-        //startTime = Time.time;
         audioController = FindObjectOfType<AudioController>();
         sceneController = FindObjectOfType<SceneController>();
         pause = false;
@@ -66,12 +59,6 @@ public class GameController : MonoBehaviour
         StartCoroutine(DestroyLevelNumberText());
     }
 
-    private void OnGUI()
-    {
-        // Счетчик для отображения номера волны врагов (дебаг)
-        GUI.Label(new Rect(200, 10, 100, 34), "Wave: " + waveNumber, style);
-    }
-
     // Вначале показывается текст с номером уровня, потом мы его убиваем
     IEnumerator DestroyLevelNumberText()
     {
@@ -86,9 +73,9 @@ public class GameController : MonoBehaviour
         //{
             for (int i = 0; i < waves.Length; i++)
             {
-                waveNumber = i + 1; // Номер волны врагов
+                waveNumberText.text = "Wave: " + (i + 1); // Номер волны врагов
 
-                for (int j = 0; j < waves[i].hazards.Length; j++)
+            for (int j = 0; j < waves[i].hazards.Length; j++)
                 {
                     GameObject hazard = waves[i].hazards[j];
                     Vector3 halfSize;
@@ -162,16 +149,19 @@ public class GameController : MonoBehaviour
 
     public void GameOver()
     {
-        Time.timeScale = 0f;
-        if(PlayerPrefs.GetInt("highScore", 0) < score)
+        if (!winCanvasGroup.interactable && !isShuttingDown)
         {
-            PlayerPrefs.SetInt("highScore", score);
-            sceneController.SetHighScoreValue(score);
+            Time.timeScale = 0f;
+            if (PlayerPrefs.GetInt("highScore", 0) < score)
+            {
+                PlayerPrefs.SetInt("highScore", score);
+                sceneController.SetHighScoreValue(score);
+            }
+            pause = true;
+            CanvasGroupActivation(gameOverCanvasGroup, true);
+            CanvasGroupActivation(pauseButton, false);
+            gameOver = true;
         }
-        pause = true;
-        CanvasGroupActivation(gameOverCanvasGroup, true);
-        CanvasGroupActivation(pauseButton, false);
-        gameOver = true;
     }
 
     public void RestartGame()
@@ -196,16 +186,19 @@ public class GameController : MonoBehaviour
 
     public void LevelCompleted()
     {
-        Time.timeScale = 0f;
-        PlayerPrefs.SetInt(nextSceneName, 1);
-        if (PlayerPrefs.GetInt("highScore", 0) < score)
+        if (!gameOverCanvasGroup.interactable && !isShuttingDown)
         {
-            PlayerPrefs.SetInt("highScore", score);
-            sceneController.SetHighScoreValue(score);
+            Time.timeScale = 0f;
+            PlayerPrefs.SetInt(nextSceneName, 1);
+            if (PlayerPrefs.GetInt("highScore", 0) < score)
+            {
+                PlayerPrefs.SetInt("highScore", score);
+                sceneController.SetHighScoreValue(score);
+            }
+            pause = true;
+            CanvasGroupActivation(winCanvasGroup, true);
+            CanvasGroupActivation(pauseButton, false);
         }
-        pause = true;
-        CanvasGroupActivation(winCanvasGroup, true);
-        CanvasGroupActivation(pauseButton, false);
     }
 
     public void MainMenu()

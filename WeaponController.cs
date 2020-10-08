@@ -71,7 +71,6 @@ public class WeaponController : MonoBehaviour
         if (currentShot.tag == "Laser")
         {
             Instantiate(currentShot, shotSpawn.position, shotSpawn.rotation, transform);
-            Debug.Log(currentShot.tag);
         }
         else
         {

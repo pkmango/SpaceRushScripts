@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DestroyByContact : MonoBehaviour
 {
+    public bool boss; // Это босс?
     public GameObject explosion;
     public GameObject playerExplosion;
     public GameObject shield;
@@ -13,6 +14,7 @@ public class DestroyByContact : MonoBehaviour
 
     private bool objectDestroyed; // Уничтожен ли объект? защита от двойного инициирования OnTriggerEnter
     private GameController gameController;
+    private int startHealth; // Стартовый показатель здоровья
 
     void Start()
     {
@@ -26,6 +28,8 @@ public class DestroyByContact : MonoBehaviour
         {
             //Debug.Log("Cannot find 'GameController' script");
         }
+
+        startHealth = health;
     }
 
     void OnTriggerEnter(Collider other)
@@ -44,7 +48,6 @@ public class DestroyByContact : MonoBehaviour
         {
             other.gameObject.GetComponent<PlayerController>().weaponID = 0;
             Instantiate(playerExplosion, other.transform.position, other.transform.rotation);
-            //other.gameObject.SetActive(false);
             other.gameObject.GetComponent<MeshRenderer>().enabled = false;
             other.gameObject.GetComponent<PlayerController>().engine.SetActive(false);
             for (int i = 0; i < gameController.Lifes.Length; i++)
@@ -83,6 +86,10 @@ public class DestroyByContact : MonoBehaviour
                     hitSound.Play();
                 }
                 
+                if (boss)
+                {
+                    gameController.currentBossHelthBar.localScale = new Vector2(health / (float)startHealth, gameController.currentBossHelthBar.localScale.y);
+                }
             }
             else
             {

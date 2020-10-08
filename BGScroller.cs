@@ -11,18 +11,18 @@ public class BGScroller : MonoBehaviour
     private Vector3 startPosition;
     private float newPosition;
     private float zeroTime;
+    private Rigidbody rb;
 
     void Start()
     {
-        startPosition = transform.position;
-        //startPosition = new Vector3(transform.position.x, transform.position.y, 0);
-        //newPosition = 0;
+        rb = GetComponent<Rigidbody>();
+        startPosition = rb.position;
         zeroTime = Time.time;
     }
 
     void Update()
     {
         newPosition = Mathf.Repeat((Time.time - zeroTime) * scrollSpeed, tileSizeZ);
-        transform.position = startPosition + Vector3.forward * newPosition;
+        rb.position = startPosition + Vector3.forward * newPosition;
     }
 }
